@@ -1,0 +1,7 @@
+Patient,Headache,Muscle-pain,Temperature,Flu
+p1,no,yes,high,yes
+p2,yes,no,high,yes
+p3,yes,yes,very high,yes
+p4,no,yes,normal,no
+p5,yes,no,high,no
+p6,no,yes,very high,yes
