@@ -14,7 +14,7 @@ class Roughset:
         """
         self.U = U
         self.A = A
-        self.knowledge = None  # U/A
+        self.knowledge = None  # U/A list
         """
         knowledge structure: set
         have to be a list (type set could not be recursive) # maybe need to extend set type.
@@ -116,3 +116,30 @@ class Roughset:
     def core(self):
         pass
 
+    def reducible(self, attrs: list):  # check if reductible
+        knowledge_list = self.knowledge
+        A = self.A.copy()
+        for a in attrs:
+            A.remove(a)
+        knowledge_new_list = Roughset.get_knowledge(self.U, A)
+        return Roughset.compare_list(knowledge_list, knowledge_new_list)
+
+    @staticmethod
+    def trans_to_set(l: list) -> list:  # transform elements to set
+        l2 = l.copy()  # use l will confuse the element (l was changing)
+        for e in l:
+            if isinstance(e, list):
+                l2.remove(e)
+                l2.append(set(e))
+        return l2
+
+    @staticmethod
+    def compare_list(list1: list, list2: list):  # for 2 level list [1,[1..]]
+        list1 = Roughset.trans_to_set(list1)
+        list2 = Roughset.trans_to_set(list2)
+        if len(list1) != len(list2):
+            return False
+        for e in list2:
+            if e not in list1:
+                return False
+        return True
