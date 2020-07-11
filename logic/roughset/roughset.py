@@ -12,9 +12,9 @@ class Roughset:
         f: Mapping function.
         knowledge: U/R. R is relationship ,same as A. -> U/A
         """
-        self.U = U
-        self.A = A
-        self.knowledge = None  # U/A list
+        self.U = U # type: pd.DataFrame
+        self.A = A # type: list
+        self.knowledge = None  # U/A type: list
         """
         knowledge structure: set
         have to be a list (type set could not be recursive) # maybe need to extend set type.
@@ -22,12 +22,14 @@ class Roughset:
         e.g. [[1],[2],[3,4]..] or [(1),(2,3)...]
         so as X
         """
-        self.lower = None
-        self.upper = None
+        self.lower = None # type: list
+        self.upper = None # type: list
         self.bn = None  # boundary
-        self.X = None
-        self._X_knowledge = None
-        self.core = None
+        self.pos = None # type: list
+        self.neg = None # type: list
+        self.X = None # type: pd.DataFrame
+        self._X_knowledge = None # type: list
+        self.core = None # type: list
 
     @staticmethod
     def flatten_list(l: list) -> list:
@@ -70,8 +72,11 @@ class Roughset:
         knowledge = self.knowledge
         A = self.A
         self._X_knowledge = X_classification = Roughset.get_knowledge(X, A)
-        self._get_lower(knowledge, X_classification)
-        self._get_upper(knowledge, X_classification)
+        self.lower = self._get_lower(knowledge, X_classification)
+        self.upper = self._get_upper(knowledge, X_classification)
+        self.bn = self.__get_bn(self.upper, self.lower)
+        self.pos = self.__get_pos(self.lower)
+        self.neg = self.__get_neg(self.U, self.upper)
         return self
 
     def _get_lower(self, knowledge: list, X_classification: list) -> list:  # B_ lower boundary
@@ -87,7 +92,6 @@ class Roughset:
                 xs = set(x)
                 if ks.issubset(xs):
                     lower_index_list.append(k)
-        self.lower = lower_index_list
         return lower_index_list
 
     def _get_upper(self, knowledge: list, X_classification: list) -> list:  # B-bar upper boundary
@@ -104,8 +108,22 @@ class Roughset:
                 if len(ks.intersection(xs)) != 0:
                     upper_index_list.append(k)
 
-        self.upper = upper_index_list
         return upper_index_list
+
+    def __get_bn(self, upper: list, lower: list) -> list:
+        upper_list = Roughset.flatten_list(upper)
+        lower_list = Roughset.flatten_list(lower)
+        bn_list = list(set(upper_list).difference(set(lower_list)))
+        return bn_list
+
+    def __get_neg(self, U: pd.DataFrame , upper:list) -> list:
+        all_obj_set = set(U.index)
+        neg = list(all_obj_set.difference(set(Roughset.flatten_list(upper))))
+        return neg
+
+    def __get_pos(self, lower: list) -> list:
+        return lower
+
 
     def alpha(self):  # scale of rough
         return Roughset.card(self.lower) / Roughset.card(self.upper)
