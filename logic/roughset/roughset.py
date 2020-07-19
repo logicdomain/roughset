@@ -30,6 +30,7 @@ class Roughset:
         self.X = None # type: pd.DataFrame
         self._X_knowledge = None # type: list
         self.core = None # type: list
+        self.init()
 
     @staticmethod
     def flatten_list(l: list) -> list:
