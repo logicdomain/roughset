@@ -10,13 +10,13 @@ class Roughset:
         A: Attributes
         V: Values by the mapping f function.
         f: Mapping function.
-        classcification: U/R. R is relationship ,same as A. -> U/A
+        classification: U/R. R is Attributes ,same as A. -> U/A
         """
         self.U = U # type: pd.DataFrame
         self.A = A # type: list
-        self.classcification = None  # U/A type: list
+        self.classification = None  # U/A type: list
         """
-        classcification structure: set
+        classification structure: set
         have to be a list (type set could not be recursive) # maybe need to extend set type.
         [element is instance of list or tuple]
         e.g. [[1],[2],[3,4]..] or [(1),(2,3)...]
@@ -28,7 +28,7 @@ class Roughset:
         self.pos = None # type: list
         self.neg = None # type: list
         self.X = None # type: pd.DataFrame
-        self._X_classcification = None # type: list
+        self._X_classification = None # type: list
         self.core = None # type: list
         self.init()
 
@@ -47,47 +47,47 @@ class Roughset:
         return len(Roughset.flatten_list(l))
 
     @staticmethod
-    def get_classcification(U: pd.DataFrame, A: list) -> list:
+    def get_classification(U: pd.DataFrame, A: list) -> list:
         """
         classify
-        generate classcification = U/A
+        generate classification = U/A
         A: Attributes
         """
-        classcification_index_list = []
-        classcification_grouped = U.groupby(by=A)
-        for _, group_df in classcification_grouped:
-            classcification_index_list.append(list(group_df.index))
-        return classcification_index_list
+        classification_index_list = []
+        classification_grouped = U.groupby(by=A)
+        for _, group_df in classification_grouped:
+            classification_index_list.append(list(group_df.index))
+        return classification_index_list
 
     def init(self) -> list:
         """
         for lazy load.
-        get classcification
+        get classification
         learn
         """
-        self.classcification = Roughset.get_classcification(self.U, self.A)
+        self.classification = Roughset.get_classification(self.U, self.A)
         return self
 
     def set_X(self, X: pd.DataFrame):
         self.X = X
-        classcification = self.classcification
+        classification = self.classification
         A = self.A
-        self._X_classcification = X_classification = Roughset.get_classcification(X, A)
-        self.lower = self._get_lower(classcification, X_classification)
-        self.upper = self._get_upper(classcification, X_classification)
+        self._X_classification = X_classification = Roughset.get_classification(X, A)
+        self.lower = self._get_lower(classification, X_classification)
+        self.upper = self._get_upper(classification, X_classification)
         self.bn = self.__get_bn(self.upper, self.lower)
         self.pos = self.__get_pos(self.lower)
         self.neg = self.__get_neg(self.U, self.upper)
         return self
 
-    def _get_lower(self, classcification: list, X_classification: list) -> list:  # B_ lower boundary
+    def _get_lower(self, classification: list, X_classification: list) -> list:  # B_ lower boundary
         """
         lower index list.
-        X classification: X classcification,X group...
+        X classification: X classification,X group...
         """
         lower_index_list = []
 
-        for k in classcification:
+        for k in classification:
             ks = set(k)
             for x in X_classification:
                 xs = set(x)
@@ -95,14 +95,14 @@ class Roughset:
                     lower_index_list.append(k)
         return lower_index_list
 
-    def _get_upper(self, classcification: list, X_classification: list) -> list:  # B-bar upper boundary
+    def _get_upper(self, classification: list, X_classification: list) -> list:  # B-bar upper boundary
         """
         upper index list.
-        X classification: X classcification,X group...
+        X classification: X classification,X group...
         """
         upper_index_list = []
 
-        for k in classcification:
+        for k in classification:
             ks = set(k)
             for x in X_classification:
                 xs = set(x)
@@ -136,12 +136,12 @@ class Roughset:
         pass
 
     def reducible(self, attrs: list):  # check if reductible
-        classcification_list = self.classcification
+        classification_list = self.classification
         A = self.A.copy()
         for a in attrs:
             A.remove(a)
-        classcification_new_list = Roughset.get_classcification(self.U, A)
-        return Roughset.compare_list(classcification_list, classcification_new_list)
+        classification_new_list = Roughset.get_classification(self.U, A)
+        return Roughset.compare_list(classification_list, classification_new_list)
 
     @staticmethod
     def trans_to_set(l: list) -> list:  # transform elements to set
