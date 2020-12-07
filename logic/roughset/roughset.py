@@ -24,7 +24,7 @@ class Roughset:
         """
         self.lower = None # type: list
         self.upper = None # type: list
-        self.bn = None  # boundary
+        self.bn = None  # boundary, type: list
         self.pos = None # type: list
         self.neg = None # type: list
         self.X = None # type: pd.DataFrame
@@ -43,7 +43,7 @@ class Roughset:
         return r
 
     @staticmethod
-    def card(l: list) -> float:
+    def card(l: list) -> int:
         return len(Roughset.flatten_list(l))
 
     @staticmethod
@@ -126,7 +126,7 @@ class Roughset:
         return lower
 
 
-    def alpha(self):  # scale of rough
+    def alpha(self) -> float: # scale of rough
         return Roughset.card(self.lower) / Roughset.card(self.upper)
 
     def reduct(self):
@@ -135,7 +135,7 @@ class Roughset:
     def core(self):
         pass
 
-    def reducible(self, attrs: list):  # check if reductible
+    def reducible(self, attrs: list) -> bool:   # check if reductible
         classification_list = self.classification
         A = self.A.copy()
         for a in attrs:
@@ -153,7 +153,10 @@ class Roughset:
         return l2
 
     @staticmethod
-    def compare_list(list1: list, list2: list):  # for 2 level list [1,[1..]]
+    def compare_list(list1: list, list2: list) -> bool:  # for 2 level list [1,[1..]]
+        """
+        # check if list1 contains list2.
+        """
         list1 = Roughset.trans_to_set(list1)
         list2 = Roughset.trans_to_set(list2)
         if len(list1) != len(list2):
