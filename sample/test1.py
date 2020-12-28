@@ -1,4 +1,4 @@
-from logic.roughset.roughset import Roughset as rs
+from logic.roughset.roughset import RoughSet as rs
 import pandas as pd
 
 df = pd.read_csv('./test_data.csv')

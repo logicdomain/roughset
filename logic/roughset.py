@@ -2,7 +2,7 @@
 import pandas as pd
 
 
-class Roughset:
+class RoughSet:
     def __init__(self, U: pd.DataFrame, A: list):
         """
         An information system was defined as s = {U,A,V,f}.
@@ -37,14 +37,14 @@ class Roughset:
         r = []
         for e in l:
             if isinstance(e, list):
-                r.extend(Roughset.flatten_list(e))
+                r.extend(RoughSet.flatten_list(e))
             else:
                 r.append(e)
         return r
 
     @staticmethod
     def card(l: list) -> int:
-        return len(Roughset.flatten_list(l))
+        return len(RoughSet.flatten_list(l))
 
     @staticmethod
     def get_classification(U: pd.DataFrame, A: list) -> list:
@@ -65,14 +65,14 @@ class Roughset:
         get classification
         learn
         """
-        self.classification = Roughset.get_classification(self.U, self.A)
+        self.classification = RoughSet.get_classification(self.U, self.A)
         return self
 
     def set_X(self, X: pd.DataFrame):
         self.X = X
         classification = self.classification
         A = self.A
-        self._X_classification = X_classification = Roughset.get_classification(X, A)
+        self._X_classification = X_classification = RoughSet.get_classification(X, A)
         self.lower = self._get_lower(classification, X_classification)
         self.upper = self._get_upper(classification, X_classification)
         self.bn = self.__get_bn(self.upper, self.lower)
@@ -112,14 +112,14 @@ class Roughset:
         return upper_index_list
 
     def __get_bn(self, upper: list, lower: list) -> list:
-        upper_list = Roughset.flatten_list(upper)
-        lower_list = Roughset.flatten_list(lower)
+        upper_list = RoughSet.flatten_list(upper)
+        lower_list = RoughSet.flatten_list(lower)
         bn_list = list(set(upper_list).difference(set(lower_list)))
         return bn_list
 
     def __get_neg(self, U: pd.DataFrame , upper:list) -> list:
         all_obj_set = set(U.index)
-        neg = list(all_obj_set.difference(set(Roughset.flatten_list(upper))))
+        neg = list(all_obj_set.difference(set(RoughSet.flatten_list(upper))))
         return neg
 
     def __get_pos(self, lower: list) -> list:
@@ -127,7 +127,7 @@ class Roughset:
 
 
     def alpha(self) -> float: # scale of rough
-        return Roughset.card(self.lower) / Roughset.card(self.upper)
+        return RoughSet.card(self.lower) / RoughSet.card(self.upper)
 
     def reduct(self):
         pass
@@ -140,8 +140,8 @@ class Roughset:
         A = self.A.copy()
         for a in attrs:
             A.remove(a)
-        classification_new_list = Roughset.get_classification(self.U, A)
-        return Roughset.compare_list(classification_list, classification_new_list)
+        classification_new_list = RoughSet.get_classification(self.U, A)
+        return RoughSet.compare_list(classification_list, classification_new_list)
 
     @staticmethod
     def trans_to_set(l: list) -> list:  # transform elements to set
@@ -157,8 +157,8 @@ class Roughset:
         """
         # check if list1 contains list2.
         """
-        list1 = Roughset.trans_to_set(list1)
-        list2 = Roughset.trans_to_set(list2)
+        list1 = RoughSet.trans_to_set(list1)
+        list2 = RoughSet.trans_to_set(list2)
         if len(list1) != len(list2):
             return False
         for e in list2:

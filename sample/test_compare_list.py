@@ -1,4 +1,4 @@
-from roughset import Roughset as rs
+from roughset import RoughSet as rs
 k1 = [1,2,[3,4],[6,5]]
 k2 = [2,[6,5],[4,3],1]
 rs.trans_to_set(k1)
