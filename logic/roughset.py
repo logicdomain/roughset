@@ -160,7 +160,7 @@ class RoughSet:
         return RoughSet.compare_list(classification_list, classification_new_list)
 
     @staticmethod
-    def trans_to_set(l: list) -> List[list]:  # transform elements to set
+    def list_to_set(l: list) -> List[list]:  # transform elements to set
         l2 = l.copy()  # use l will confuse the element (l was changing)
         for e in l:
             if isinstance(e, list):
@@ -173,8 +173,8 @@ class RoughSet:
         """
         # check if list1 contains list2.
         """
-        list1 = RoughSet.trans_to_set(list1)
-        list2 = RoughSet.trans_to_set(list2)
+        list1 = RoughSet.list_to_set(list1)
+        list2 = RoughSet.list_to_set(list2)
         if len(list1) != len(list2):
             return False
         for e in list2:
