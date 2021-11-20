@@ -10,7 +10,8 @@ A = ['attr1','attr2'] # list
 r = rs(df,A).init()
 
 X=... # pd.DataFrame
-r.set_X(X)
+# r.set_X(X) # deprecated
+r.X = X
 print(r.lower)
 print(r.upper)
 
